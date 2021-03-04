@@ -6,6 +6,8 @@ import cherrypy
 """
 This is a simple Battlesnake server written in Python.
 For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python/README.md
+
+API: https://docs.battlesnake.com/references/api
 """
 
 
@@ -18,10 +20,11 @@ class Battlesnake(object):
         # TIP: If you open your Battlesnake URL in browser you should see this data
         return {
             "apiversion": "1",
-            "author": "",  # TODO: Your Battlesnake Username
-            "color": "#888888",  # TODO: Personalize
-            "head": "default",  # TODO: Personalize
-            "tail": "default",  # TODO: Personalize
+            "author": "chucknorris",
+            "color": "#FF0000",
+            "head": "snowman",
+            "tail": "coffee",
+            "version": "1.0",
         }
 
     @cherrypy.expose
@@ -32,6 +35,7 @@ class Battlesnake(object):
         data = cherrypy.request.json
 
         print("START")
+
         return "ok"
 
     @cherrypy.expose
@@ -48,6 +52,7 @@ class Battlesnake(object):
         move = random.choice(possible_moves)
 
         print(f"MOVE: {move}")
+
         return {"move": move}
 
     @cherrypy.expose
@@ -58,14 +63,16 @@ class Battlesnake(object):
         data = cherrypy.request.json
 
         print("END")
+
         return "ok"
 
 
 if __name__ == "__main__":
     server = Battlesnake()
-    cherrypy.config.update({"server.socket_host": "0.0.0.0"})
-    cherrypy.config.update(
-        {"server.socket_port": int(os.environ.get("PORT", "8080")),}
-    )
+
     print("Starting Battlesnake Server...")
+
+    cherrypy.config.update({"server.socket_host": "0.0.0.0"})
+    cherrypy.config.update({"server.socket_port": int(os.environ.get("PORT", "8080"))})
+
     cherrypy.quickstart(server)
