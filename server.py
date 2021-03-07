@@ -16,7 +16,7 @@ For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python
 API: https://docs.battlesnake.com/references/api
 """
 
-DEBUG = False
+DEBUG = True
 
 
 class Battlesnake(object):
