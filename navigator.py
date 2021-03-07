@@ -17,9 +17,10 @@ class Navigator:
 	board: datatype.Battlesnake
 	distance_food_weights: dict
 
-	def __init__(self, distance_food_weights: dict, mode: NavigatorMode = NavigatorMode.simple):
+	def __init__(self, distance_food_weights: dict, mode: NavigatorMode = NavigatorMode.simple, is_debug: bool = False):
 		self.distance_food_weights = distance_food_weights
 		self.mode = mode
+		self.is_debug = is_debug
 
 	def update(self, my_snake: datatype.Battlesnake, board: datatype.Board) -> None:
 		self.me: datatype.Battlesnake = my_snake

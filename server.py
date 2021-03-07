@@ -15,6 +15,8 @@ For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python
 API: https://docs.battlesnake.com/references/api
 """
 
+DEBUG = False
+
 
 class Battlesnake(object):
 
@@ -74,6 +76,12 @@ class Battlesnake(object):
 
         print(f"MOVE: {response.move}")
 
+        if DEBUG:
+            self.__dump_to_file(
+                json.dumps(cherrypy.request.json, indent=4),
+                f"{datetime.now().strftime('%H:%M:%S.%f')}_{data.turn}.json"
+            )
+
         return response.asdict()
 
     @cherrypy.expose
@@ -81,14 +89,16 @@ class Battlesnake(object):
     def end(self):
         print("END")
 
-        dump = json.dumps(cherrypy.request.json, indent=4)
-
-        with open(f"{datetime.now().strftime('%H:%M:%S.%f')}.json", 'w') as fp:
-            fp.write(dump)
-
-        print(dump)
+        self.__dump_to_file(
+            json.dumps(cherrypy.request.json, indent=4),
+            f"{datetime.now().strftime('%H:%M:%S.%f')}_END.json"
+        )
 
         return "ok"
+
+    def __dump_to_file(self, dump: str, filename: str):
+        with open(filename, 'w') as fp:
+            fp.write(dump)
 
 
 if __name__ == "__main__":
