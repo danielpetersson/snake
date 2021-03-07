@@ -1,16 +1,18 @@
 .DEFAULT_GOAL: all
 
 .PHONY: all
-all: install all
+all: build run
 
-.PHONY: install
-install:
+.PHONY: build
+build:
+	poetry update
 	poetry install
 	./write_requirements.sh
 
 .PHONY: run
-run: install
+run: build
 	poetry run python server.py
 
-#.PHONY: publish
-#publish: all
+.PHONY: deploy
+deploy: build
+	$(shell git push heroku HEAD:refs/heads/main)
