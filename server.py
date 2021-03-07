@@ -16,7 +16,7 @@ For instructions see https://github.com/BattlesnakeOfficial/starter-snake-python
 API: https://docs.battlesnake.com/references/api
 """
 
-DEBUG = True
+DEBUG = False
 
 
 class Battlesnake(object):
@@ -75,9 +75,9 @@ class Battlesnake(object):
                     f"{datetime.now().strftime('%H:%M:%S.%f')}_move.json"
                 )
 
-            data = datatype.GameRequest(**cherrypy.request.json)
             response = datatype.MoveResponse()
-            response.shout = get_random_quote() if data.turn % 5 == 0 else ""
+            data = datatype.GameRequest(**cherrypy.request.json)
+            response.shout = get_random_quote() if (data.turn - 1) % 5 == 0 else ""
 
             self.navigator.update(data.you, data.board)
             should_me_attack, move = self.navigator.attack()
@@ -87,14 +87,14 @@ class Battlesnake(object):
 
                 response.move = move
             else:
-                response.move = self.navigator.go_towards(datatype.DirectionWeight())
+                response.move = self.navigator.go_towards()
 
             for s in data.board.snakes:
                 self.stats.append(f"name={s.name},latency={s.latency},health={s.health},length={s.length}")
         except Exception as e:
             print(f'Exception: {str(e)}')
 
-        print(f"MOVE: {response.move}")
+        print(f"MOVE: {response.move} at turn {data.turn}")
 
         return response.asdict()
 

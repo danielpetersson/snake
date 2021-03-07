@@ -51,7 +51,7 @@ class Navigator:
 
 		return False, None
 
-	def go_towards(self, direction_weight: datatype.DirectionWeight) -> datatype.Direction:
+	def go_towards(self) -> datatype.Direction:
 		direction_weight = datatype.DirectionWeight()
 
 		self.__find_food(direction_weight)
@@ -69,7 +69,7 @@ class Navigator:
 			weight = direction_weight.up
 			move = datatype.Direction.up
 
-		if direction_weight.up > weight:
+		if direction_weight.down > weight:
 			move = datatype.Direction.down
 
 		return move.value
@@ -112,15 +112,15 @@ class Navigator:
 		for obstacle in self.obstacles:
 			x_diff, y_diff = self.me.head.compare(obstacle)
 
-		if x_diff == 1:
-			direction_weight.left = -1
-		elif x_diff == - 1:
-			direction_weight.right = -1
+			if x_diff == 1 and y_diff == 0:
+				direction_weight.left = -1
+			elif x_diff == - 1 and y_diff == 0:
+				direction_weight.right = -1
 
-		if y_diff == 1:
-			direction_weight.down = -1
-		elif y_diff == -1:
-			direction_weight.up = -1
+			if y_diff == 1 and x_diff == 0:
+				direction_weight.down = -1
+			elif y_diff == -1 and x_diff == 0:
+				direction_weight.up = -1
 
 	def __avoid_walls(self, direction_weight: datatype.DirectionWeight) -> None:
 		if self.me.head.x == 0:
