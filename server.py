@@ -1,6 +1,7 @@
 from datetime import datetime
 import json
 import os
+from typing import List
 
 import cherrypy
 
@@ -21,6 +22,7 @@ DEBUG = False
 class Battlesnake(object):
 
     navigator: Navigator
+    stats: List
 
     @cherrypy.expose
     @cherrypy.tools.json_out()
@@ -47,6 +49,7 @@ class Battlesnake(object):
 
         distance_food_weights = {i: int((0.8 ** i) * 100) for i in range(1, max(data.board.width, data.board.height))}
         self.navigator = Navigator(distance_food_weights)
+        self.stats = []
 
         return "ok"
 
@@ -76,6 +79,9 @@ class Battlesnake(object):
 
         print(f"MOVE: {response.move}")
 
+        for s in data.board.snakes:
+            self.stats.append(f"name={s.name},latency={s.latency},health={s.health},length={s.length}")
+
         if DEBUG:
             self.__dump_to_file(
                 json.dumps(cherrypy.request.json, indent=4),
@@ -89,8 +95,11 @@ class Battlesnake(object):
     def end(self):
         print("END")
 
+        data = cherrypy.request.json
+        data["stats"] = self.stats
+
         self.__dump_to_file(
-            json.dumps(cherrypy.request.json, indent=4),
+            json.dumps(data, indent=4),
             f"{datetime.now().strftime('%H:%M:%S.%f')}_END.json"
         )
 
