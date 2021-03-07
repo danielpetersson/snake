@@ -79,7 +79,7 @@ class Battlesnake:
     head: Point
     length: int
     shout: str
-    squad: str
+    #squad: str
 
     def __post_init__(self):
         self.body = [Point(**b) for b in self.body]
