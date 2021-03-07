@@ -65,8 +65,12 @@ class Ruleset:
 @dataclass
 class Game:
     id: str
-    ruleset: Dict
     timeout: int
+    # ruleset: Ruleset
+
+    def __init__(self, id, timeout, **kwargs):
+        self.id = id
+        self.timeout = timeout
 
 
 @dataclass
@@ -79,11 +83,17 @@ class Battlesnake:
     head: Point
     length: int
     shout: str
-    #squad: str
+    # squad: str
 
-    def __post_init__(self):
-        self.body = [Point(**b) for b in self.body]
-        self.head = Point(**self.head)
+    def __init__(self, id, name, health, body, latency, head, length, shout, **kwargs):
+        self.id = id
+        self.name = name
+        self.health = health
+        self.body = [Point(**b) for b in body]
+        self.latency = latency
+        self.head = Point(**head)
+        self.length = length
+        self.shout = shout
 
 
 @dataclass
