@@ -6,7 +6,7 @@ from typing import List
 import cherrypy
 
 import datatype
-from navigator import Navigator
+from navigator import Navigator, NavigatorMode
 from quote import get_random_quote
 
 """
@@ -17,6 +17,7 @@ API: https://docs.battlesnake.com/references/api
 """
 
 DEBUG = False
+NAVIGATOR_MODE = NavigatorMode.simple
 
 
 class Battlesnake(object):
@@ -48,14 +49,14 @@ class Battlesnake(object):
         try:
             if DEBUG:
                 self.__dump(
-                    json.dumps(cherrypy.request.json, indent=4),
+                    json.dumps({'start': cherrypy.request.json}, indent=4),
                     f"{datetime.now().strftime('%H:%M:%S.%f')}_start.json"
                 )
 
             data = datatype.GameRequest(**cherrypy.request.json)
 
             distance_food_weights = {i: int((0.8 ** i) * 100) for i in range(1, max(data.board.width, data.board.height))}
-            self.navigator = Navigator(distance_food_weights)
+            self.navigator = Navigator(distance_food_weights, mode=NAVIGATOR_MODE, is_debug=DEBUG)
             self.stats = []
         except Exception as e:
             print(f'Exception: {str(e)}')
@@ -71,7 +72,7 @@ class Battlesnake(object):
         try:
             if DEBUG:
                 self.__dump(
-                    json.dumps(cherrypy.request.json, indent=4),
+                    json.dumps({'move': cherrypy.request.json}, indent=4),
                     f"{datetime.now().strftime('%H:%M:%S.%f')}_move.json"
                 )
 
@@ -94,7 +95,7 @@ class Battlesnake(object):
         except Exception as e:
             print(f'Exception: {str(e)}')
 
-        print(f"MOVE: {response.move} at turn {data.turn}")
+        print(f"MOVE: {response.move} at turn {data.turn} with latency {data.you.latency}")
 
         return response.asdict()
 
@@ -108,7 +109,7 @@ class Battlesnake(object):
             data["stats"] = self.stats
 
             self.__dump(
-                json.dumps(data, indent=4),
+                json.dumps({'end': data}, indent=4),
                 f"{datetime.now().strftime('%H:%M:%S.%f')}_end.json"
             )
         except Exception as e:
