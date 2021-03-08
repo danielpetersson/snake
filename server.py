@@ -55,7 +55,8 @@ class Battlesnake(object):
 
             data = datatype.GameRequest(**cherrypy.request.json)
 
-            distance_food_weights = {i: int((0.8 ** i) * 100) for i in range(1, max(data.board.width, data.board.height))}
+            max_distance = data.board.width + data.board.height
+            distance_food_weights = {i: int((0.8 ** i) * 100) for i in range(1, max_distance)}
             self.navigator = Navigator(distance_food_weights, mode=NAVIGATOR_MODE, is_debug=DEBUG)
             self.stats = []
         except Exception as e:

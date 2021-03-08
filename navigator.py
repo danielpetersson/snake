@@ -97,16 +97,17 @@ class Navigator:
 		for i in range(0, len(is_closest)):
 			if is_closest[i]:
 				x_diff, y_diff = self.me.head.compare(self.board.food[i])
+				total = abs(x_diff) + abs(y_diff)
 
 				if x_diff < 0:
-					direction_weight.right += self.distance_food_weights[abs(x_diff)]
+					direction_weight.right += self.distance_food_weights[total]
 				if x_diff > 0:
-					direction_weight.left += self.distance_food_weights[abs(x_diff)]
+					direction_weight.left += self.distance_food_weights[total]
 
 				if y_diff < 0:
-					direction_weight.up += self.distance_food_weights[abs(y_diff)]
+					direction_weight.up += self.distance_food_weights[total]
 				elif y_diff > 0:
-					direction_weight.down += self.distance_food_weights[abs(y_diff)]
+					direction_weight.down += self.distance_food_weights[total]
 
 	def __avoid_obstacles(self, direction_weight: datatype.DirectionWeight) -> None:
 		for obstacle in self.obstacles:
